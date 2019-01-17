@@ -1,0 +1,14 @@
+services:
+    GepurIt\OneCClientBundle\HttpClient\ApiHttpClient:
+        class: GepurIt\OneCClientBundle\HttpClient\ApiHttpClient
+        autowire: true
+
+    GepurIt\OneCClientBundle\Rabbit\:
+        resource: '../../Rabbit'
+        autowire: true
+
+    GepurIt\OneCClientBundle\Command\:
+        resource: '../../Command'
+        autowire: true
+        tags:
+           - { name: console.command }

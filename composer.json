@@ -1,0 +1,48 @@
+{
+  "name": "gepur-it/one-c-client",
+  "description": "Assembly goals module for storage",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "version":"1.0.0",
+  "authors": [
+    {
+      "name": "Andrii Yakovlev",
+      "email": "yawa20@gmail.com"
+    },
+    {
+      "name": "Victor Pavlov",
+      "email": "zogxray@gmail.com"
+    }
+  ],
+  "keywords": [
+    "gepur",
+    "symfony",
+    "bundle",
+    "one-c"
+  ],
+  "homepage": "https://github.com/gepur-it/one-c-client",
+  "require": {
+    "php": "^7.2",
+    "symfony/dependency-injection": ">=4.1",
+    "symfony/config": ">=4.1",
+    "psr/http-message": "^1.0",
+    "eightpoints/guzzle-bundle": ">=7.2",
+    "gepur-it/rabbitmq-bundle": "^1.2",
+    "symfony/console": "^4.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "GepurIt\\OneCClientBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GepurIt\\OneCClientBundle\\Tests\\": "Tests"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
