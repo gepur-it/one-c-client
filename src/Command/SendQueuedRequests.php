@@ -89,7 +89,7 @@ class SendQueuedRequests extends Command
     protected function configure(): void
     {
         $this
-            ->setName('onec:queue:request')
+            ->setName('one-c:queue:request')
             ->setDescription('Send requests to OneC from queue');
     }
 
