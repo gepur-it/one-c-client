@@ -7,12 +7,13 @@
 namespace GepurIt\OneCClientBundle\Event;
 
 use GepurIt\OneCClientBundle\Request\OneCRequest;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class RequestSentEvent
  * @package GepurIt\OneCClientBundle\Event
  */
-class RequestSentEvent
+class RequestSentEvent extends Event
 {
     const NAME ='one.c.request_sent';
 
