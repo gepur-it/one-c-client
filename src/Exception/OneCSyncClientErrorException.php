@@ -26,7 +26,7 @@ class OneCSyncClientErrorException extends OneCSyncException
         Throwable $previous = null
     ) {
         if (null !== $response) {
-            $this->response = trim($response->getBody()->__toString());
+            $this->response = $this->cleanResponseBody($response->getBody()->__toString());
         }
 
         parent::__construct($message, $code, $previous);
@@ -48,6 +48,21 @@ class OneCSyncClientErrorException extends OneCSyncException
     public function getResponse()
     {
         return $this->response;
+    }
+
+    /**
+     * @param string $responseBody
+     *
+     * @return string
+     */
+    private function cleanResponseBody(string $responseBody): string
+    {
+        $responseBody = trim($responseBody);
+        if (substr($responseBody, 0, 3) == pack('CCC', 0xef, 0xbb, 0xbf)) {
+            $responseBody = substr($responseBody, 3);
+        }
+
+        return $responseBody;
     }
 }
 
