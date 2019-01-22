@@ -69,7 +69,7 @@ class SendQueuedRequests extends Command
         $message = $envelope->getBody();
 
         $requestData = json_decode($message);
-        $request = new OneCRequest($requestData->route, $requestData->method, $requestData->data);
+        $request = new OneCRequest($requestData->route, $requestData->method, (array) $requestData->data);
         /** @var OneCRequest $request */
 
         try {
