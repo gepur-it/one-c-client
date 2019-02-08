@@ -143,7 +143,6 @@ class ApiHttpClient
      * @throws OneCSyncException
      * @throws OneCSyncServerErrorException
      * @throws OneCSyncClientErrorException
-     * @throws \Exception
      */
     public function sendRequest(OneCRequest $request): OneCResponse
     {

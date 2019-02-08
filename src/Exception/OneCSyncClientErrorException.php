@@ -19,17 +19,27 @@ class OneCSyncClientErrorException extends OneCSyncException
     /** @var string */
     private $response = '';
 
+    /** @var array  */
+    private $errors = [];
+
     public function __construct(
         string $message = "",
         int $code = 0,
         ResponseInterface $response = null,
         Throwable $previous = null
     ) {
+        $message = preg_replace('/\s+/', ' ', trim($message));
+        parent::__construct($message, $code, $previous);
+
         if (null !== $response) {
-            $this->response = $this->cleanResponseBody($response->getBody()->__toString());
+            $responseText = $this->cleanResponseBody($response->getBody()->__toString());
+        } else {
+            $responseText = '';
         }
 
-        parent::__construct($message, $code, $previous);
+        if ($code === 400) {
+            $this->parseResponse($responseText);
+        }
     }
 
     public static function fromGuzzle(ClientException $exception)
@@ -40,6 +50,35 @@ class OneCSyncClientErrorException extends OneCSyncException
             $exception->getResponse(),
             $exception->getPrevious()
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    private function parseResponse(?string $responseText)
+    {
+        $body = json_decode($responseText, true);
+        if (null === $body || empty($body['status'])) {
+            return;
+        }
+
+        switch ($body['status']) {
+            case "invalid version":
+                $this->code = 412;
+                $this->message = "Invalid version";
+                break;
+            case "order blocked":
+                $this->code = 409;
+                $this->message = "Order locked on OneC";
+                break;
+            default:
+                $this->errors = $body;
+        }
     }
 
     /**
@@ -65,4 +104,3 @@ class OneCSyncClientErrorException extends OneCSyncException
         return $responseBody;
     }
 }
-
