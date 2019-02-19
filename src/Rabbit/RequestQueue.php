@@ -6,20 +6,18 @@
 
 namespace GepurIt\OneCClientBundle\Rabbit;
 
-use GepurIt\RabbitMqBundle\Configurator\AbstractDeadDeferredConfigurator;
+use GepurIt\RabbitMqBundle\Configurator\SimpleDeadDeferredConfigurator;
 use GepurIt\RabbitMqBundle\RabbitInterface;
 
 /**
  * Class RequestQueue
  * @package OneCBundle\Rabbit
  */
-class RequestQueue extends AbstractDeadDeferredConfigurator
+class RequestQueue extends SimpleDeadDeferredConfigurator
 {
-    const QUEUE_NAME = 'one_c_request';
+    const QUEUE_NAME          = 'one_c_request';
     const QUEUE_NAME_DEFERRED = 'one_c_request_dead';
-
-    /** @var RabbitInterface */
-    private $rabbit;
+    const TTL                 = 300000;
 
     /**
      * RequestQueue constructor.
@@ -28,38 +26,6 @@ class RequestQueue extends AbstractDeadDeferredConfigurator
      */
     public function __construct(RabbitInterface $rabbit)
     {
-        $this->rabbit = $rabbit;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeferred(): string
-    {
-        return self::QUEUE_NAME_DEFERRED;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return self::QUEUE_NAME;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTtl(): int
-    {
-        return 300000;
-    }
-
-    /**
-     * @return RabbitInterface
-     */
-    public function getRabbit(): RabbitInterface
-    {
-        return $this->rabbit;
+        parent::__construct($rabbit, self::QUEUE_NAME, self::QUEUE_NAME_DEFERRED, self::TTL);
     }
 }
