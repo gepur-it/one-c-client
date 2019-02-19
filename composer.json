@@ -3,7 +3,7 @@
   "description": "Assembly goals module for storage",
   "type": "symfony-bundle",
   "license": "MIT",
-  "version":"1.0.3",
+  "version":"2.0.1",
   "authors": [
     {
       "name": "Andrii Yakovlev",
@@ -27,7 +27,7 @@
     "symfony/config": ">=4.1",
     "psr/http-message": "^1.0",
     "eightpoints/guzzle-bundle": ">=7.2",
-    "gepur-it/rabbitmq-bundle": "^1.2",
+    "gepur-it/rabbitmq-bundle": "^2.0",
     "symfony/console": "^4.2"
   },
   "require-dev": {

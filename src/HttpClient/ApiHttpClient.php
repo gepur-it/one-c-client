@@ -164,15 +164,11 @@ class ApiHttpClient
     /**
      * @param OneCRequest $request
      *
-     * @throws \AMQPChannelException
-     * @throws \AMQPConnectionException
-     * @throws \AMQPExchangeException
-     * @throws \AMQPQueueException
      */
     public function queueRequest(OneCRequest $request)
     {
         $message = json_encode($request);
-        $this->queue->publish($message);
+        $this->queue->push($message);
     }
 
     /**
