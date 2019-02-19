@@ -7,7 +7,7 @@
 namespace GepurIt\OneCClientBundle\Rabbit;
 
 use GepurIt\RabbitMqBundle\Configurator\AbstractDeadDeferredConfigurator;
-use GepurIt\RabbitMqBundle\Rabbit;
+use GepurIt\RabbitMqBundle\RabbitInterface;
 
 /**
  * Class RequestQueue
@@ -18,15 +18,15 @@ class RequestQueue extends AbstractDeadDeferredConfigurator
     const QUEUE_NAME = 'one_c_request';
     const QUEUE_NAME_DEFERRED = 'one_c_request_dead';
 
-    /** @var Rabbit */
+    /** @var RabbitInterface */
     private $rabbit;
 
     /**
      * RequestQueue constructor.
      *
-     * @param Rabbit $rabbit
+     * @param RabbitInterface $rabbit
      */
-    public function __construct(Rabbit $rabbit)
+    public function __construct(RabbitInterface $rabbit)
     {
         $this->rabbit = $rabbit;
     }
@@ -56,9 +56,9 @@ class RequestQueue extends AbstractDeadDeferredConfigurator
     }
 
     /**
-     * @return Rabbit
+     * @return RabbitInterface
      */
-    public function getRabbit(): Rabbit
+    public function getRabbit(): RabbitInterface
     {
         return $this->rabbit;
     }
