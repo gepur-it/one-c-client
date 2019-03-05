@@ -6,6 +6,8 @@
 
 namespace GepurIt\OneCClientBundle;
 
+use GepurIt\OneCClientBundle\DependencyInjection\CompilerPass\RequestErrorHandlerCompilerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -14,5 +16,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class OneCClientBundle extends Bundle
 {
-
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new RequestErrorHandlerCompilerPass());
+    }
 }

@@ -15,7 +15,7 @@ use GepurIt\OneCClientBundle\DeferredRequest\DeferredRequestError;
 class DeferredRequestErrorHandler
 {
     /** @var array */
-    private $handlers;
+    private $handlers = [];
 
     public function addHandler(ConcreteErrorHandlerInterface $errorHandler, int $priority = 0)
     {
