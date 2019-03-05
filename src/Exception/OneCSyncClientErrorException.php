@@ -32,13 +32,13 @@ class OneCSyncClientErrorException extends OneCSyncException
         parent::__construct($message, $code, $previous);
 
         if (null !== $response) {
-            $responseText = $this->cleanResponseBody($response->getBody()->__toString());
+            $this->response = $this->cleanResponseBody($response->getBody()->__toString());
         } else {
-            $responseText = '';
+            $this->response = '';
         }
 
         if ($code === 400) {
-            $this->parseResponse($responseText);
+            $this->parseResponse($this->response);
         }
     }
 
