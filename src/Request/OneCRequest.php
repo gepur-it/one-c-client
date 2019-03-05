@@ -31,17 +31,29 @@ class OneCRequest implements \JsonSerializable
     private $data;
 
     /**
+     * @var array
+     */
+    private $supportData = [];
+
+    /**
      * OneCRequest constructor.
      *
      * @param string $rote
      * @param string $method
      * @param array  $data
+     * @param array  $supportData
      */
-    public function __construct(string $rote, string $method = self::METHOD__GET, array $data = [])
+    public function __construct(
+        string $rote,
+        string $method = self::METHOD__GET,
+        array $data = [],
+        array $supportData = []
+    )
     {
         $this->route = $rote;
         $this->method = $method;
         $this->data = $data;
+        $this->supportData = $supportData;
     }
 
     /**
@@ -93,18 +105,31 @@ class OneCRequest implements \JsonSerializable
             'route' => $this->getRoute(),
             'method' => $this->getMethod(),
             'data' => $this->getData(),
+            'supportData' => $this->getSupportData(),
         ];
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSupportData(): array
+    {
+        return $this->supportData;
+    }
+
+    /**
+     * @param array $supportData
+     */
+    public function setSupportData(array $supportData): void
+    {
+        $this->supportData = $supportData;
     }
 }

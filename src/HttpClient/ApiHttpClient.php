@@ -3,6 +3,7 @@
 namespace GepurIt\OneCClientBundle\HttpClient;
 
 use GepurIt\OneCClientBundle\Event\RequestSentEvent;
+use GepurIt\OneCClientBundle\Rabbit\RequestDeferredQueue;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -72,12 +73,18 @@ class ApiHttpClient
     private $eventDispatcher;
 
     /**
+     * @var RequestDeferredQueue
+     */
+    private $deferredQueue;
+
+    /**
      * ApiHttpClient constructor.
      *
      * @param ClientInterface          $client
      * @param string                   $resource
      * @param string                   $token
      * @param RequestQueue             $queue
+     * @param RequestDeferredQueue     $deferredQueue
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
@@ -85,6 +92,7 @@ class ApiHttpClient
         string $resource,
         string $token,
         RequestQueue $queue,
+        RequestDeferredQueue $deferredQueue,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->client        = $client;
@@ -95,6 +103,7 @@ class ApiHttpClient
         $resource       = rtrim($resource, $suffix).$suffix;
         $this->resource = $resource;
         $this->eventDispatcher = $eventDispatcher;
+        $this->deferredQueue = $deferredQueue;
     }
 
     /**
@@ -169,6 +178,15 @@ class ApiHttpClient
     {
         $message = json_encode($request);
         $this->queue->push($message);
+    }
+
+    /**
+     * @param OneCRequest $request
+     */
+    public function queueRequestProrogued(OneCRequest $request)
+    {
+        $message = json_encode($request);
+        $this->deferredQueue->push($message);
     }
 
     /**

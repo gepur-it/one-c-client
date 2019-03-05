@@ -6,6 +6,8 @@
 
 namespace GepurIt\OneCClientBundle\Command;
 
+use GepurIt\OneCClientBundle\DeferredRequest\DeferredRequestError;
+use GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\DeferredRequestErrorHandler;
 use GepurIt\OneCClientBundle\Exception\OneCSyncException;
 use GepurIt\OneCClientBundle\HttpClient\ApiHttpClient;
 use GepurIt\OneCClientBundle\Rabbit\RequestQueue;
@@ -33,30 +35,37 @@ class SendQueuedRequests extends Command
     /** @var ApiHttpClient */
     private $httpClient;
 
-    /** @var LoggerInterface  */
+    /** @var LoggerInterface */
     private $logger;
+
+    /** @var DeferredRequestErrorHandler */
+    private $errorHandler;
 
     /**
      * SendQueuedRequests constructor.
      *
-     * @param RequestQueue        $queue
-     * @param ApiHttpClient       $httpClient
-     * @param LoggerInterface     $logger
+     * @param RequestQueue                $queue
+     * @param ApiHttpClient               $httpClient
+     * @param LoggerInterface             $logger
+     * @param DeferredRequestErrorHandler $errorHandler
      */
     public function __construct(
         RequestQueue $queue,
         ApiHttpClient $httpClient,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        DeferredRequestErrorHandler $errorHandler
     ) {
-        $this->queue      = $queue;
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
+        $this->queue        = $queue;
+        $this->httpClient   = $httpClient;
+        $this->logger       = $logger;
+        $this->errorHandler = $errorHandler;
 
         parent::__construct(null);
     }
 
     /**
      * @used-by execute
+     *
      * @param \AMQPEnvelope $envelope
      * @param \AMQPQueue    $queue
      *
@@ -69,18 +78,17 @@ class SendQueuedRequests extends Command
         $message = $envelope->getBody();
 
         $requestData = json_decode($message, true);
-        $request = new OneCRequest($requestData['route'], $requestData['method'], $requestData['data']);
-        /** @var OneCRequest $request */
+        $request     = new OneCRequest($requestData['route'], $requestData['method'], $requestData['data']);
 
+        /** @var OneCRequest $request */
         try {
             $this->httpClient->sendRequest($request);
         } catch (OneCSyncException $exception) {
-            $this->logger->error($exception->getMessage(), ['exception'=>$exception]);
-            $queue->nack($envelope->getDeliveryTag());
-            return;
+            $this->errorHandler->handle(new DeferredRequestError($exception, $request));
         }
 
         $queue->ack($envelope->getDeliveryTag());
+        $this->queue->getRabbit()->flush();
     }
 
     /**

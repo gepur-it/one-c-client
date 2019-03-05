@@ -12,3 +12,11 @@ services:
         autowire: true
         tags:
            - { name: console.command }
+
+    GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\DeferredRequestErrorHandler:
+        autowire: true
+
+    GepurIt\OneCClientBundle\DeferredRequestErrorHandler\ResendRequest:
+        autowire: true
+        tags:
+          - {name: one_c.dr_error.handler, priority: 500}
