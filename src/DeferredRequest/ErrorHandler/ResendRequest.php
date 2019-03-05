@@ -54,7 +54,7 @@ class ResendRequest implements ConcreteErrorHandlerInterface
      */
     public function handle(DeferredRequestError $error): void
     {
-        $this->logger->error($error->getException()->getMessage(), [
+        $this->logger->error("One Request Error: ". $error->getException()->getMessage(), [
             'request' => $error->getRequest()->toArray(),
             'exception' => $error->getException()->getTrace()
         ]);
