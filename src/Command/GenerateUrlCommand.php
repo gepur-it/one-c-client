@@ -6,7 +6,7 @@
 
 namespace GepurIt\OneCClientBundle\Command;
 
-use GepurIt\OneCClientBundle\HttpClient\ApiHttpClient;
+use GepurIt\OneCClientBundle\Security\HashGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,18 +23,19 @@ class GenerateUrlCommand extends Command
 
     /** @var InputInterface */
     private $input;
-
-    /** @var ApiHttpClient  */
-    private $client;
+    /**
+     * @var HashGenerator
+     */
+    private $hashGenerator;
 
     /**
      * GenerateUrlCommand constructor.
      *
-     * @param ApiHttpClient $client
+     * @param HashGenerator $hashGenerator
      */
-    public function __construct(ApiHttpClient $client)
+    public function __construct(HashGenerator $hashGenerator)
     {
-        $this->client = $client;
+        $this->hashGenerator = $hashGenerator;
         parent::__construct();
     }
 
@@ -46,8 +47,7 @@ class GenerateUrlCommand extends Command
         $this
             ->setName('one-c:generate:url')
             ->setDescription('Generate url fot oneC request')
-            ->addArgument('query', InputArgument::REQUIRED, "query to generate url");
-        ;
+            ->addArgument('query', InputArgument::REQUIRED, "query to generate url");;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -57,6 +57,6 @@ class GenerateUrlCommand extends Command
 
         $query = $this->input->getArgument('query');
 
-        $this->output->writeln($this->client->generateGetQuery($query));
+        $this->output->writeln($this->hashGenerator->generate($query));
     }
 }
