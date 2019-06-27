@@ -47,7 +47,7 @@ class DeferredRequestError
     /**
      * stop propagation
      */
-    public function stopPropagation()
+    public function stopPropagation(): void
     {
         $this->propagationStopped = true;
     }

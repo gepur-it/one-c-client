@@ -42,7 +42,7 @@ class GenerateUrlCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('one-c:generate:url')
@@ -50,13 +50,21 @@ class GenerateUrlCommand extends Command
             ->addArgument('query', InputArgument::REQUIRED, "query to generate url");;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int|null
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->input = $input;
         $this->output = $output;
 
+        /** @var string $query */
         $query = $this->input->getArgument('query');
 
         $this->output->writeln($this->hashGenerator->generate($query));
+
+        return 0;
     }
 }

@@ -145,7 +145,7 @@ class ApiHttpClient implements OneCClientInterface
     {
         switch ($request->getMethod()) {
             case OneCRequest::METHOD__POST:
-                $this->eventDispatcher->dispatch(RequestSentEvent::NAME, new RequestSentEvent($request));
+                $this->eventDispatcher->dispatch(new RequestSentEvent($request));
                 $result = $this->requestPost($request->getRoute(), $request->getData());
                 break;
             case OneCRequest::METHOD__GET:

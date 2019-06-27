@@ -17,7 +17,7 @@ class DeferredRequestErrorHandler
     /** @var array */
     private $handlers = [];
 
-    public function addHandler(ConcreteErrorHandlerInterface $errorHandler, int $priority = 0)
+    public function addHandler(ConcreteErrorHandlerInterface $errorHandler, int $priority = 0): void
     {
         $this->handlers[$priority][]=$errorHandler;
     }
