@@ -34,4 +34,12 @@ class RequestSentEvent extends Event
     {
         $this->request = $request;
     }
+
+    /**
+     * @return OneCRequest
+     */
+    public function getRequest(): OneCRequest
+    {
+        return $this->request;
+    }
 }
