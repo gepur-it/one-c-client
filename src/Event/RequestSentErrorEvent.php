@@ -1,38 +1,40 @@
 <?php
 /**
  * @author: Andrii yakovlev <yawa20@gmail.com>
- * @since : 17.01.19
+ * @since : 16.09.19
  */
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Event;
 
+use GepurIt\OneCClientBundle\Exception\OneCSyncException;
 use GepurIt\OneCClientBundle\Request\OneCRequest;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Class RequestSentEvent
+ * Class RequestSentErrorEvent
  * @package GepurIt\OneCClientBundle\Event
  */
-class RequestSentEvent extends Event
+final class RequestSentErrorEvent extends Event
 {
-    /**
-     * @deprecated
-     */
-    const NAME = self::class;
-
     /**
      * @var OneCRequest
      */
     private $request;
 
+    /** @var OneCSyncException */
+    private $exception;
+
     /**
      * RequestSentEvent constructor.
      *
      * @param OneCRequest $request
+     * @param OneCSyncException $exception
      */
-    public function __construct(OneCRequest $request)
+    public function __construct(OneCRequest $request, OneCSyncException $exception)
     {
         $this->request = $request;
+        $this->exception = $exception;
     }
 
     /**

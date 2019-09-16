@@ -2,7 +2,8 @@
 
 namespace GepurIt\OneCClientBundle\HttpClient;
 
-use GepurIt\OneCClientBundle\Event\RequestSentEvent;
+use GepurIt\OneCClientBundle\Event\RequestSentErrorEvent;
+use GepurIt\OneCClientBundle\Event\RequestSentSuccessEvent;
 use GepurIt\OneCClientBundle\Exception\OneCSyncClientErrorException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncServerErrorException;
@@ -145,8 +146,14 @@ class ApiHttpClient implements OneCClientInterface
     {
         switch ($request->getMethod()) {
             case OneCRequest::METHOD__POST:
-                $this->eventDispatcher->dispatch(new RequestSentEvent($request));
-                $result = $this->requestPost($request->getRoute(), $request->getData());
+                try {
+                    $result = $this->requestPost($request->getRoute(), $request->getData());
+                    $this->eventDispatcher->dispatch(new RequestSentSuccessEvent($request, $result));
+                } catch (OneCSyncException $exception) {
+                    $this->eventDispatcher->dispatch(new RequestSentErrorEvent($request, $exception));
+                    throw $exception;
+                }
+
                 break;
             case OneCRequest::METHOD__GET:
                 $result = $this->requestGet($request->getRoute());
