@@ -25,7 +25,7 @@ class RequestSentSuccessEvent extends Event
      * @var OneCRequest
      */
     private $request;
-    
+
     /**
      * @var OneCResponse
      */
@@ -49,5 +49,13 @@ class RequestSentSuccessEvent extends Event
     public function getRequest(): OneCRequest
     {
         return $this->request;
+    }
+
+    /**
+     * @return OneCResponse
+     */
+    public function getResult(): OneCResponse
+    {
+        return $this->result;
     }
 }

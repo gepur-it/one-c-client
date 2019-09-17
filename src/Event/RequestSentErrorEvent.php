@@ -44,4 +44,12 @@ final class RequestSentErrorEvent extends Event
     {
         return $this->request;
     }
+
+    /**
+     * @return OneCSyncException
+     */
+    public function getException(): OneCSyncException
+    {
+        return $this->exception;
+    }
 }
