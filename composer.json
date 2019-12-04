@@ -3,7 +3,7 @@
   "description": "Assembly goals module for storage",
   "type": "symfony-bundle",
   "license": "MIT",
-  "version": "4.3.4",
+  "version": "5.0.0",
   "authors": [
     {
       "name": "Andrii Yakovlev",
@@ -24,11 +24,11 @@
   "require": {
     "php": "^7.3",
     "ext-json": "*",
-    "symfony/console": "^4.3",
-    "symfony/dependency-injection": "^4.3",
-    "symfony/config": "^4.3",
+    "symfony/console": "^4.3|^5.0",
+    "symfony/dependency-injection": "^4.3|^5.0",
+    "symfony/config": "^4.3|^5.0",
     "eightpoints/guzzle-bundle": ">=7.2",
-    "gepur-it/rabbitmq-bundle": "^4.3"
+    "gepur-it/rabbitmq-bundle": "^4.3|^5.0"
   },
   "require-dev": {
   },
