@@ -4,7 +4,7 @@
  * @since : 05.03.19
  */
 
-namespace GepurIt\OneCClientBundle\DeferredRequestErrorHandler;
+namespace GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler;
 
 use GepurIt\OneCClientBundle\DeferredRequest\DeferredRequestError;
 use GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\ConcreteErrorHandlerInterface;

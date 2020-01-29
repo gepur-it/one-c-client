@@ -16,7 +16,7 @@ services:
   GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\DeferredRequestErrorHandler:
     autowire: true
 
-  GepurIt\OneCClientBundle\DeferredRequestErrorHandler\ResendRequest:
+  GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\ResendRequest:
     autowire: true
     tags:
       - {name: one_c.dr_error.handler, priority: 500}
