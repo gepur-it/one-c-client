@@ -3,7 +3,7 @@
   "description": "Assembly goals module for storage",
   "type": "symfony-bundle",
   "license": "MIT",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "authors": [
     {
       "name": "Andrii Yakovlev",
