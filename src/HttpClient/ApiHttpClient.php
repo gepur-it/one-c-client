@@ -64,6 +64,7 @@ class ApiHttpClient implements OneCClientInterface
     private string $resource = '';
     private string $login = '';
     private string $password = '';
+    private bool $auth = false;
     private RequestQueue $queue;
     private EventDispatcherInterface $eventDispatcher;
     private RequestDeferredQueue $deferredQueue;
@@ -76,6 +77,7 @@ class ApiHttpClient implements OneCClientInterface
      * @param string                   $resource
      * @param string                   $login
      * @param string                   $password
+     * @param bool                     $auth
      * @param HashGenerator            $hashGenerator
      * @param RequestQueue             $queue
      * @param RequestDeferredQueue     $deferredQueue
@@ -86,6 +88,7 @@ class ApiHttpClient implements OneCClientInterface
         string $resource,
         string $login,
         string $password,
+        bool $auth,
         HashGenerator $hashGenerator,
         RequestQueue $queue,
         RequestDeferredQueue $deferredQueue,
@@ -99,6 +102,7 @@ class ApiHttpClient implements OneCClientInterface
         $this->resource = $resource;
         $this->login = $login;
         $this->password = $password;
+        $this->auth = $auth;
         $this->eventDispatcher = $eventDispatcher;
         $this->deferredQueue = $deferredQueue;
         $this->hashGenerator = $hashGenerator;
@@ -112,9 +116,7 @@ class ApiHttpClient implements OneCClientInterface
     public function generateGetQuery(string $request): string
     {
         $hash = $this->hashGenerator->generate($request);
-        $uri = $this->resource.$request.'/'.$hash;
-
-        return $uri;
+        return $this->resource.$request.'/'.$hash;
     }
 
     /**
@@ -214,14 +216,16 @@ class ApiHttpClient implements OneCClientInterface
     public function request(string $method, string $uri, array $requestData)
     {
         $uri = new Uri($uri);
-        $requestData = array_merge(
-            [
-                RequestOptions::HEADERS => [
-                    'Authorization' => "Basic ".base64_encode("{$this->login}:{$this->password}")
-                ]
-            ],
-            $requestData
-        );
+        if ($this->auth) {
+            $requestData = array_merge(
+                [
+                    RequestOptions::HEADERS => [
+                        'Authorization' => "Basic ".base64_encode("{$this->login}:{$this->password}")
+                    ]
+                ],
+                $requestData
+            );
+        }
         try {
             $response = $this->client->request($method, $uri, $requestData);
         } catch (ServerException $exception) {
