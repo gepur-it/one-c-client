@@ -17,6 +17,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\RequestOptions;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -58,37 +60,32 @@ class ApiHttpClient implements OneCClientInterface
      */
     const ENTITY_PROCESSING_ERROR__CODE = 422;
 
-    /** @var ClientInterface $client */
-    private $client;
-
-    /** @var string $resource */
-    private $resource;
-
-    /** @var RequestQueue */
-    private $queue;
-
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
-
-    /** @var RequestDeferredQueue */
-    private $deferredQueue;
-
-    /** @var HashGenerator */
-    private $hashGenerator;
+    private ClientInterface $client;
+    private string $resource = '';
+    private string $login = '';
+    private string $password = '';
+    private RequestQueue $queue;
+    private EventDispatcherInterface $eventDispatcher;
+    private RequestDeferredQueue $deferredQueue;
+    private HashGenerator $hashGenerator;
 
     /**
      * ApiHttpClient constructor.
      *
-     * @param ClientInterface $client
-     * @param string $resource
-     * @param HashGenerator $hashGenerator
-     * @param RequestQueue $queue
-     * @param RequestDeferredQueue $deferredQueue
+     * @param ClientInterface          $client
+     * @param string                   $resource
+     * @param string                   $login
+     * @param string                   $password
+     * @param HashGenerator            $hashGenerator
+     * @param RequestQueue             $queue
+     * @param RequestDeferredQueue     $deferredQueue
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         ClientInterface $client,
         string $resource,
+        string $login,
+        string $password,
         HashGenerator $hashGenerator,
         RequestQueue $queue,
         RequestDeferredQueue $deferredQueue,
@@ -100,6 +97,8 @@ class ApiHttpClient implements OneCClientInterface
         $suffix = '/';
         $resource = rtrim($resource, $suffix).$suffix;
         $this->resource = $resource;
+        $this->login = $login;
+        $this->password = $password;
         $this->eventDispatcher = $eventDispatcher;
         $this->deferredQueue = $deferredQueue;
         $this->hashGenerator = $hashGenerator;
@@ -214,6 +213,15 @@ class ApiHttpClient implements OneCClientInterface
      */
     public function request(string $method, string $uri, array $requestData)
     {
+        $uri = new Uri($uri);
+        $requestData = array_merge(
+            [
+                RequestOptions::HEADERS => [
+                    'Authorization' => "Basic ".base64_encode("{$this->login}:{$this->password}")
+                ]
+            ],
+            $requestData
+        );
         try {
             $response = $this->client->request($method, $uri, $requestData);
         } catch (ServerException $exception) {

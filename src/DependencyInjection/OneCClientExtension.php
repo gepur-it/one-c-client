@@ -58,6 +58,8 @@ class OneCClientExtension extends Extension
     {
         $client = $container->findDefinition(ApiHttpClient::class);
         $client->setArgument('$resource', $config['url']);
+        $client->setArgument('$login', $config['login']);
+        $client->setArgument('$password', $config['password']);
         $container->setAlias(OneCClientInterface::class, ApiHttpClient::class);
     }
 }
