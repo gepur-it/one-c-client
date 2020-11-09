@@ -15,7 +15,9 @@ class RequestDeferredQueue extends RequestQueue
 {
     /**
      * @param string      $message
-     * @param null|string $routingKey
+     * @param string|null $routingKey
+     * @param int         $flags
+     * @param array       $attributes
      *
      * @return bool
      * @throws \AMQPChannelException
@@ -23,7 +25,7 @@ class RequestDeferredQueue extends RequestQueue
      * @throws \AMQPExchangeException
      * @throws \AMQPQueueException
      */
-    public function publish(string $message, ?string $routingKey = null): bool
+    public function publish(string $message, ?string $routingKey = null, int $flags = AMQP_NOPARAM, array $attributes = []): bool
     {
         $routingKey = $routingKey??$this->getDeferred();
         return $this->getExchange()->publish($message, $routingKey);
