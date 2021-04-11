@@ -3,6 +3,7 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 05.03.19
  */
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\DeferredRequest;
 
@@ -15,14 +16,9 @@ use GepurIt\OneCClientBundle\Request\OneCRequest;
  */
 class DeferredRequestError
 {
-    /** @var bool */
-    private $propagationStopped = false;
-
-    /** @var OneCSyncException */
-    private $exception;
-
-    /** @var OneCRequest */
-    private $request;
+    private bool $propagationStopped = false;
+    private OneCSyncException $exception;
+    private OneCRequest $request;
 
     /**
      * DeferredRequestError constructor.

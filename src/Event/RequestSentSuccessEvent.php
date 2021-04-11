@@ -21,15 +21,8 @@ class RequestSentSuccessEvent extends Event
      */
     const NAME = self::class;
 
-    /**
-     * @var OneCRequest
-     */
-    private $request;
-
-    /**
-     * @var OneCResponse
-     */
-    private $result;
+    private OneCRequest $request;
+    private OneCResponse $result;
 
     /**
      * RequestSentEvent constructor.

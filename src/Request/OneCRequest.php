@@ -3,6 +3,7 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 23.11.18
  */
+declare(strict_types=1);
 
 namespace  GepurIt\OneCClientBundle\Request;
 
@@ -15,25 +16,10 @@ class OneCRequest implements \JsonSerializable
     const METHOD__GET = 'GET';
     const METHOD__POST = 'POST';
 
-    /**
-     * @var string
-     */
-    private $route;
-
-    /**
-     * @var string
-     */
-    private $method;
-
-    /**
-     * @var array
-     */
-    private $data;
-
-    /**
-     * @var array
-     */
-    private $supportData = [];
+    private string $route;
+    private string $method;
+    private array $data;
+    private array $supportData = [];
 
     /**
      * OneCRequest constructor.

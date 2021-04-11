@@ -14,11 +14,12 @@ namespace GepurIt\OneCClientBundle\Security;
  */
 class HashGenerator
 {
-    /**
-     * @var string
-     */
-    private $token;
+    private string $token;
 
+    /**
+     * HashGenerator constructor.
+     * @param string $token
+     */
     public function __construct(string $token)
     {
         $this->token = $token;
@@ -28,7 +29,7 @@ class HashGenerator
      * @param string $content
      * @return string
      */
-    public function generate(string $content)
+    public function generate(string $content): string
     {
         return md5($content.$this->token);
     }

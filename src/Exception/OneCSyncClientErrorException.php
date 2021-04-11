@@ -3,6 +3,7 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 19.10.17
  */
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Exception;
 
@@ -16,11 +17,8 @@ use Throwable;
  */
 class OneCSyncClientErrorException extends OneCSyncException
 {
-    /** @var string */
-    private $response = '';
-
-    /** @var array  */
-    private $errors = [];
+    private string $response = '';
+    private array $errors = [];
 
     public function __construct(
         string $message = "",

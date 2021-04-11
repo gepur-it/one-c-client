@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Exception;
 
@@ -6,6 +7,10 @@ use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
+/**
+ * Class OneCSyncServerErrorException
+ * @package GepurIt\OneCClientBundle\Exception
+ */
 class OneCSyncServerErrorException extends OneCSyncException
 {
     /** @var string */

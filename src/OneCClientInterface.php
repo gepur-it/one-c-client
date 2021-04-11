@@ -14,6 +14,10 @@ use GepurIt\OneCClientBundle\Exception\OneCSyncServerErrorException;
 use GepurIt\OneCClientBundle\HttpClient\OneCResponse;
 use GepurIt\OneCClientBundle\Request\OneCRequest;
 
+/**
+ * Interface OneCClientInterface
+ * @package GepurIt\OneCClientBundle
+ */
 interface OneCClientInterface
 {
     /**

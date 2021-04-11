@@ -3,6 +3,7 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 23.11.18
  */
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Rabbit;
 

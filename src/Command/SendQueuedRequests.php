@@ -12,7 +12,6 @@ use GepurIt\OneCClientBundle\Exception\OneCSyncException;
 use GepurIt\OneCClientBundle\HttpClient\ApiHttpClient;
 use GepurIt\OneCClientBundle\Rabbit\RequestQueue;
 use GepurIt\OneCClientBundle\Request\OneCRequest;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,41 +22,26 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SendQueuedRequests extends Command
 {
-    /** @var InputInterface */
-    private $input;
-
-    /** @var OutputInterface */
-    private $output;
-
-    /** @var RequestQueue */
-    private $queue;
-
-    /** @var ApiHttpClient */
-    private $httpClient;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var DeferredRequestErrorHandler */
-    private $errorHandler;
+    private InputInterface $input;
+    private OutputInterface $output;
+    private RequestQueue $queue;
+    private ApiHttpClient $httpClient;
+    private DeferredRequestErrorHandler $errorHandler;
 
     /**
      * SendQueuedRequests constructor.
      *
      * @param RequestQueue                $queue
      * @param ApiHttpClient               $httpClient
-     * @param LoggerInterface             $logger
      * @param DeferredRequestErrorHandler $errorHandler
      */
     public function __construct(
         RequestQueue $queue,
         ApiHttpClient $httpClient,
-        LoggerInterface $logger,
         DeferredRequestErrorHandler $errorHandler
     ) {
         $this->queue        = $queue;
         $this->httpClient   = $httpClient;
-        $this->logger       = $logger;
         $this->errorHandler = $errorHandler;
 
         parent::__construct(null);

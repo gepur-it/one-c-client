@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\HttpClient;
 
@@ -168,7 +169,6 @@ class ApiHttpClient implements OneCClientInterface
 
     /**
      * @param OneCRequest $request
-     *
      */
     public function queueRequest(OneCRequest $request)
     {
@@ -213,7 +213,7 @@ class ApiHttpClient implements OneCClientInterface
      * @throws OneCSyncServerErrorException
      * @throws OneCSyncClientErrorException
      */
-    public function request(string $method, string $uri, array $requestData)
+    public function request(string $method, string $uri, array $requestData): OneCResponse
     {
         $uri = new Uri($uri);
         if ($this->auth) {

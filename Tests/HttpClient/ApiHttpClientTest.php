@@ -3,12 +3,15 @@
  * @author Marina Mileva <m934222258@gmail.com>
  * @since 10.11.17
  */
+declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Tests\HttpClient;
 
 use GepurIt\OneCClientBundle\HttpClient\ApiHttpClient;
 use GepurIt\OneCClientBundle\HttpClient\OneCResponse;
+use GepurIt\OneCClientBundle\Rabbit\RequestDeferredQueue;
 use GepurIt\OneCClientBundle\Rabbit\RequestQueue;
+use GepurIt\OneCClientBundle\Security\HashGenerator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -16,6 +19,7 @@ use GuzzleHttp\Exception\ServerException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncClientErrorException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncServerErrorException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -28,12 +32,15 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ApiHttpClientTest extends TestCase
 {
-
+    /**
+     * @throws OneCSyncClientErrorException
+     * @throws OneCSyncException
+     * @throws OneCSyncServerErrorException
+     */
     public function testRequestGet()
     {
         $request = 'request';
         $resource = 'resource';
-        $token = 'token';
 
         $streamMock = $this->getStreamInterfaceMock();
         $streamMock->expects($this->once())
@@ -51,8 +58,20 @@ class ApiHttpClientTest extends TestCase
             ->withAnyParameters()
             ->willReturn($responseMock);
         $requestQueue = $this->createMock(RequestQueue::class);
+        $requestDefQueue = $this->createMock(RequestDeferredQueue::class);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $apiHttpClient = new ApiHttpClient($clientMock, $resource, $token, $requestQueue, $eventDispatcher);
+        $hashGenerator = $this->createMock(HashGenerator::class);
+        $apiHttpClient = new ApiHttpClient(
+            $clientMock,
+            $resource,
+            'login',
+            'password',
+            true,
+            $hashGenerator,
+            $requestQueue,
+            $requestDefQueue,
+            $eventDispatcher
+        );
         $res = $apiHttpClient->requestGet($request);
         $this->assertInstanceOf(OneCResponse::class, $res);
     }
@@ -61,13 +80,12 @@ class ApiHttpClientTest extends TestCase
     /**
      * Test method requestGet()
      * when arg Client() throw ServerException
-     * @expectedException \GepurIt\OneCClientBundle\Exception\OneCSyncServerErrorException
      */
     public function testThrowServerExceptionInRequestGet()
     {
+        $this->expectException(OneCSyncServerErrorException::class);
         $request = 'request';
         $resource = 'resource';
-        $token = 'token';
         $message = get_class(new OneCSyncServerErrorException('string_of_message'));
         $requestInterfaceMock = $this->getRequestInterfaceMock();
         $responseExcMock = $this->getResponseMock();
@@ -89,8 +107,20 @@ class ApiHttpClientTest extends TestCase
             ->willReturn($body);
 
         $requestQueue = $this->createMock(RequestQueue::class);
+        $requestDefQueue = $this->createMock(RequestDeferredQueue::class);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $apiHttpClient = new ApiHttpClient($clientMock, $resource, $token, $requestQueue, $eventDispatcher);
+        $hashGenerator = $this->createMock(HashGenerator::class);
+        $apiHttpClient = new ApiHttpClient(
+            $clientMock,
+            $resource,
+            'login',
+            'password',
+            true,
+            $hashGenerator,
+            $requestQueue,
+            $requestDefQueue,
+            $eventDispatcher
+        );
         $res = $apiHttpClient->requestGet($request);
         $this->assertInstanceOf(OneCResponse::class, $res);
     }
@@ -98,13 +128,12 @@ class ApiHttpClientTest extends TestCase
     /**
      * Test method requestGet()
      * when arg Client() throw ClientException
-     * @expectedException \GepurIt\OneCClientBundle\Exception\OneCSyncClientErrorException
      */
     public function testThrowClientExceptionInRequestGet()
     {
+        $this->expectException(OneCSyncClientErrorException::class);
         $request = 'request';
         $resource = 'resource';
-        $token = 'token';
 
         $message = get_class(new OneCSyncClientErrorException('string_of_message'));
         $requestInterfaceMock = $this->getRequestInterfaceMock();
@@ -127,8 +156,20 @@ class ApiHttpClientTest extends TestCase
             ->willThrowException($exception);
 
         $requestQueue = $this->createMock(RequestQueue::class);
+        $requestDefQueue = $this->createMock(RequestDeferredQueue::class);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $apiHttpClient = new ApiHttpClient($clientMock, $resource, $token, $requestQueue, $eventDispatcher);
+        $hashGenerator = $this->createMock(HashGenerator::class);
+        $apiHttpClient = new ApiHttpClient(
+            $clientMock,
+            $resource,
+            'login',
+            'password',
+            true,
+            $hashGenerator,
+            $requestQueue,
+            $requestDefQueue,
+            $eventDispatcher
+        );
         $res = $apiHttpClient->requestGet($request);
         $this->assertInstanceOf(OneCResponse::class, $res);
     }
@@ -136,13 +177,12 @@ class ApiHttpClientTest extends TestCase
     /**
      * Test method requestGet()
      * when arg Client() throw RequestException
-     * @expectedException \GepurIt\OneCClientBundle\Exception\OneCSyncException
      */
     public function testThrowRequestExceptionInRequestGet()
     {
+        $this->expectException(OneCSyncException::class);
         $request = 'request';
         $resource = 'resource';
-        $token = 'token';
 
         $message = get_class(new OneCSyncException('string_of_message'));
         $requestInterfaceMock = $this->getRequestInterfaceMock();
@@ -156,15 +196,27 @@ class ApiHttpClientTest extends TestCase
             ->willThrowException($exception);
 
         $requestQueue = $this->createMock(RequestQueue::class);
+        $requestDefQueue = $this->createMock(RequestDeferredQueue::class);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $apiHttpClient = new ApiHttpClient($clientMock, $resource, $token, $requestQueue, $eventDispatcher);
+        $hashGenerator = $this->createMock(HashGenerator::class);
+        $apiHttpClient = new ApiHttpClient(
+            $clientMock,
+            $resource,
+            'login',
+            'password',
+            true,
+            $hashGenerator,
+            $requestQueue,
+            $requestDefQueue,
+            $eventDispatcher
+        );
         $res = $apiHttpClient->requestGet($request);
         $this->assertInstanceOf(OneCResponse::class, $res);
     }
 
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|RequestInterface
+     * @return MockObject|RequestInterface
      */
     private function getRequestInterfaceMock()
     {
@@ -175,18 +227,18 @@ class ApiHttpClientTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Client
+     * @return MockObject|Client
      */
     private function getClientMock()
     {
         return $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['request'])
+            ->onlyMethods(['request'])
             ->getMock();
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ResponseInterface
+     * @return MockObject|ResponseInterface
      */
     private function getResponseMock()
     {
@@ -196,7 +248,7 @@ class ApiHttpClientTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|StreamInterface
+     * @return MockObject|StreamInterface
      */
     private function getStreamInterfaceMock()
     {
