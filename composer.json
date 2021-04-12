@@ -34,7 +34,8 @@
     "symfony/config": "^5.1",
     "eightpoints/guzzle-bundle": ">=7.2",
     "gepur-it/rabbitmq-bundle": "^5.2",
-    "phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^9.5",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
