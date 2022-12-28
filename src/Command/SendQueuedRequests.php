@@ -69,7 +69,15 @@ class SendQueuedRequests extends Command
         try {
             $this->httpClient->sendRequest($request);
         } catch (OneCSyncException $exception) {
-            $this->errorHandler->handle(new DeferredRequestError($exception, $request));
+            $retryingLimit = $envelope->getHeader('x-death')[0]['count'] ?? null;
+
+            if ($retryingLimit <= 3) {
+                $this->errorHandler->handle(new DeferredRequestError($exception, $request));
+                $queue->nack($envelope->getDeliveryTag());
+            } else {
+                $queue->ack($envelope->getDeliveryTag());
+            }
+            return;
         }
 
         $queue->ack($envelope->getDeliveryTag());
