@@ -27,22 +27,18 @@ class SendQueuedRequests extends Command
     private RequestQueue $queue;
     private ApiHttpClient $httpClient;
     private DeferredRequestErrorHandler $errorHandler;
+    private int $retryingLimit;
 
-    /**
-     * SendQueuedRequests constructor.
-     *
-     * @param RequestQueue                $queue
-     * @param ApiHttpClient               $httpClient
-     * @param DeferredRequestErrorHandler $errorHandler
-     */
     public function __construct(
         RequestQueue $queue,
         ApiHttpClient $httpClient,
-        DeferredRequestErrorHandler $errorHandler
+        DeferredRequestErrorHandler $errorHandler,
+        int $retryingLimit = 0
     ) {
         $this->queue        = $queue;
         $this->httpClient   = $httpClient;
         $this->errorHandler = $errorHandler;
+        $this->retryingLimit = $retryingLimit;
 
         parent::__construct(null);
     }
@@ -69,9 +65,9 @@ class SendQueuedRequests extends Command
         try {
             $this->httpClient->sendRequest($request);
         } catch (OneCSyncException $exception) {
-            $retryingLimit = $envelope->getHeader('x-death')[0]['count'] ?? null;
+            $currentTrying = $envelope->getHeader('x-death')[0]['count'] ?? null;
 
-            if ($retryingLimit <= 3) {
+            if ($currentTrying <= $this->retryingLimit || 0 === $this->retryingLimit) {
                 $this->errorHandler->handle(new DeferredRequestError($exception, $request));
                 $queue->nack($envelope->getDeliveryTag());
             } else {
