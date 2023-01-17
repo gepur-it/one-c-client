@@ -17,8 +17,13 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class RequestSentErrorEvent extends Event
 {
-    private OneCRequest $request;
-    private OneCSyncException $exception;
+    /**
+     * @var OneCRequest
+     */
+    private $request;
+
+    /** @var OneCSyncException */
+    private $exception;
 
     /**
      * RequestSentEvent constructor.

@@ -102,7 +102,9 @@ class SendQueuedRequests extends Command
     {
         $this->input  = $input;
         $this->output = $output;
-        $queue        = $this->queue->getQueue();
+
+        $this->queue->getExchange();
+        $queue = $this->queue->getQueue();
         $queue->consume([$this, 'processEnvelope']);
     }
 }

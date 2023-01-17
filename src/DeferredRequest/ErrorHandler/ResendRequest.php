@@ -3,11 +3,11 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 05.03.19
  */
-declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler;
 
 use GepurIt\OneCClientBundle\DeferredRequest\DeferredRequestError;
+use GepurIt\OneCClientBundle\DeferredRequest\ErrorHandler\ConcreteErrorHandlerInterface;
 use GepurIt\OneCClientBundle\Exception\OneCSyncClientErrorException;
 use GepurIt\OneCClientBundle\Exception\OneCSyncServerErrorException;
 use GepurIt\OneCClientBundle\HttpClient\ApiHttpClient;
@@ -19,8 +19,13 @@ use Psr\Log\LoggerInterface;
  */
 class ResendRequest implements ConcreteErrorHandlerInterface
 {
-    private ApiHttpClient $client;
-    private LoggerInterface $logger;
+    /**
+     * @var ApiHttpClient
+     */
+    private $client;
+
+    /** @var LoggerInterface */
+    private $logger;
 
     /**
      * ResendRequest constructor.
@@ -60,7 +65,5 @@ class ResendRequest implements ConcreteErrorHandlerInterface
             $logData['response'] = $exception->getResponse();
         }
         $this->logger->error("One C Request Error", $logData);
-
-        $this->client->queueRequestProrogued($error->getRequest());
     }
 }

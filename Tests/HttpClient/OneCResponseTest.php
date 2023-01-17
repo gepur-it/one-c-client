@@ -3,20 +3,14 @@
  * @author Marina Mileva <m934222258@gmail.com>
  * @since 10.11.17
  */
-declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Tests\HttpClient;
 
 use GepurIt\OneCClientBundle\HttpClient\OneCResponse;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-/**
- * Class OneCResponseTest
- * @package GepurIt\OneCClientBundle\Tests\HttpClient
- */
 class OneCResponseTest extends TestCase
 {
     public function testGetterMethods()
@@ -45,7 +39,7 @@ class OneCResponseTest extends TestCase
     }
 
     /**
-     * @return MockObject|ResponseInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|ResponseInterface
      */
     private function getResponseInterfaceMock()
     {
@@ -55,7 +49,7 @@ class OneCResponseTest extends TestCase
     }
 
     /**
-     * @return MockObject|StreamInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|StreamInterface
      */
     private function getStreamInterfaceMock()
     {

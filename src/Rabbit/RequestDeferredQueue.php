@@ -3,9 +3,9 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 05.03.19
  */
-declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\Rabbit;
+
 
 /**
  * Class RequestDeferredQueue

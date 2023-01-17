@@ -18,9 +18,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class GenerateUrlCommand extends Command
 {
-    private OutputInterface $output;
-    private InputInterface $input;
-    private HashGenerator $hashGenerator;
+    /** @var OutputInterface */
+    private $output;
+
+    /** @var InputInterface */
+    private $input;
+    /**
+     * @var HashGenerator
+     */
+    private $hashGenerator;
 
     /**
      * GenerateUrlCommand constructor.

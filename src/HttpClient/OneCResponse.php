@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle\HttpClient;
 
@@ -7,18 +6,22 @@ use Psr\Http\Message\ResponseInterface;
 
 class OneCResponse
 {
-    private int $status;
-    private string $data;
-    /** @var string[][] $headers */
-    private array $headers = [];
+    /** @var int $status */
+    private $status;
+
+    /** @var string $data */
+    private $data;
+
+    /** @var \string[][] $headers */
+    private $headers;
 
     /**
      * @param ResponseInterface $httpResponse
      */
-    public function __construct(ResponseInterface $httpResponse)
+    public function __construct (ResponseInterface $httpResponse)
     {
-        $this->headers = $httpResponse->getHeaders() ?? [];
-        $this->status = $httpResponse->getStatusCode() ?? 0;
+        $this->headers = $httpResponse->getHeaders();
+        $this->status = $httpResponse->getStatusCode();
         $this->data = $this->normalize($httpResponse->getBody()->getContents());
     }
 

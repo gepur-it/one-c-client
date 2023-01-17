@@ -3,7 +3,6 @@
  * @author: Andrii yakovlev <yawa20@gmail.com>
  * @since : 17.01.19
  */
-declare(strict_types=1);
 
 namespace GepurIt\OneCClientBundle;
 
@@ -17,9 +16,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class OneCClientBundle extends Bundle
 {
-    /**
-     * @param ContainerBuilder $container
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new RequestErrorHandlerCompilerPass());
