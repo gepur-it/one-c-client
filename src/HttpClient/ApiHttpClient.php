@@ -129,9 +129,7 @@ class ApiHttpClient implements OneCClientInterface
      */
     public function requestGet(string $request): OneCResponse
     {
-        $hash = $this->hashGenerator->generate($request);
-        $uri = $this->resource.$request.'/'.$hash;
-
+        $uri = $this->resource.$request;
         return $this->request('GET', $uri, []);
     }
 
