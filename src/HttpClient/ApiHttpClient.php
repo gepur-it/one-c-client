@@ -11,7 +11,6 @@ use GepurIt\OneCClientBundle\OneCClientInterface;
 use GepurIt\OneCClientBundle\Rabbit\RequestDeferredQueue;
 use GepurIt\OneCClientBundle\Rabbit\RequestQueue;
 use GepurIt\OneCClientBundle\Request\OneCRequest;
-use GepurIt\OneCClientBundle\Security\HashGenerator;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -68,28 +67,13 @@ class ApiHttpClient implements OneCClientInterface
     private RequestQueue $queue;
     private EventDispatcherInterface $eventDispatcher;
     private RequestDeferredQueue $deferredQueue;
-    private HashGenerator $hashGenerator;
 
-    /**
-     * ApiHttpClient constructor.
-     *
-     * @param ClientInterface          $client
-     * @param string                   $resource
-     * @param string                   $login
-     * @param string                   $password
-     * @param bool                     $auth
-     * @param HashGenerator            $hashGenerator
-     * @param RequestQueue             $queue
-     * @param RequestDeferredQueue     $deferredQueue
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(
         ClientInterface $client,
         string $resource,
         string $login,
         string $password,
         bool $auth,
-        HashGenerator $hashGenerator,
         RequestQueue $queue,
         RequestDeferredQueue $deferredQueue,
         EventDispatcherInterface $eventDispatcher
@@ -105,18 +89,11 @@ class ApiHttpClient implements OneCClientInterface
         $this->auth = $auth;
         $this->eventDispatcher = $eventDispatcher;
         $this->deferredQueue = $deferredQueue;
-        $this->hashGenerator = $hashGenerator;
     }
 
-    /**
-     * @param string $request
-     *
-     * @return string
-     */
     public function generateGetQuery(string $request): string
     {
-        $hash = $this->hashGenerator->generate($request);
-        return $this->resource.$request.'/'.$hash;
+        return $this->resource.$request;
     }
 
     /**
@@ -195,8 +172,7 @@ class ApiHttpClient implements OneCClientInterface
     public function requestPost(string $request, array $requestData): OneCResponse
     {
         $body = json_encode($requestData);
-        $hash = $this->hashGenerator->generate($request.$body);
-        $uri = $this->resource.$request.'/'.$hash;
+        $uri = $this->resource.$request;
 
         return $this->request('POST', $uri, ['body' => $body]);
     }
